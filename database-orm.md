@@ -28,6 +28,32 @@ export default defineConfig({
 });
 ```
 
+## Required Packages
+
+Install the following packages:
+
+```bash
+npm install drizzle-orm postgres @types/pg
+npm install -D drizzle-kit
+```
+
+Package versions and their purposes:
+- `drizzle-orm`: Core ORM functionality
+- `postgres`: PostgreSQL client for Node.js
+- `@types/pg`: TypeScript types for PostgreSQL
+- `drizzle-kit`: Development tools for migrations and schema management
+
+Add these scripts to your `package.json`:
+```json
+{
+  "scripts": {
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg",
+    "db:studio": "drizzle-kit studio"
+  }
+}
+```
+
 ## Schema Definition
 
 Schemas are defined in `db/schema.ts` using Drizzle's type-safe schema builder. Example:
@@ -258,4 +284,4 @@ export async function updateDocument(id: string, data: UpdateData) {
         return null;
     }
 }
-``` 
+```
