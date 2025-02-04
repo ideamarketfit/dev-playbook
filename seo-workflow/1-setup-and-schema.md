@@ -17,37 +17,6 @@ npm install -D drizzle-kit
 # Type Safety and Validation
 npm install zod
 npm install -D typescript @types/node
-
-# AI and Content Generation
-npm install @anthropic-ai/sdk ai
-
-# Web Scraping and Analysis
-npm install axios cheerio
-
-# Development Tools
-npm install -D tsx ts-node
-```
-
-## 1.2 Project Structure
-
-```
-├── utils/
-│   └── seo-workflow/
-│       ├── configurations/    # Workflow configurations
-│       │   ├── tool-page-seo-workflow.ts
-│       │   └── template-page-seo-workflow.ts
-│       ├── prompts/          # AI prompts
-│       │   ├── content-prompt.ts
-│       │   └── form-prompt.ts
-│       ├── common-function.ts # Shared utilities
-│       └── run-workflow.ts   # Workflow runner
-├── types/                    # TypeScript types
-│   ├── content.ts
-│   └── workflow.ts
-├── db/                       # Database
-│   ├── schema.ts
-│   └── index.ts
-└── .env                      # Environment variables
 ```
 
 ## 1.2 Database Configuration Pattern
@@ -201,24 +170,6 @@ export default {
 } satisfies Config;
 ```
 
-## 1.6 Environment Setup
-
-Required environment variables:
-
-```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_project_url
-SUPABASE_SERVICE_ROLE_KEY=your_service_key
-DATABASE_URL=postgres://your_connection_string
-
-# AI Model Configuration
-NEXT_PUBLIC_SEO_MODEL=claude-3-sonnet-20240229
-ANTHROPIC_API_KEY=your_api_key
-
-# Search Configuration (Optional)
-GOOGLE_SEARCH_KEY=your_search_key
-GOOGLE_SEARCH_ID=your_search_engine_id
-```
 
 ## Key Implementation Notes
 
@@ -242,71 +193,3 @@ GOOGLE_SEARCH_ID=your_search_engine_id
    - Index frequently queried language fields
    - Use partial indexes for specific languages
    - Consider materialized views for common queries 
-
-## Common Issues and Solutions
-
-1. **Database Connection**:
-   ```typescript
-   // Handle connection timeouts
-   const createDb = (retries = 3) => {
-     try {
-       return drizzle(/* ... */);
-     } catch (error) {
-       if (retries > 0) {
-         return createDb(retries - 1);
-       }
-       throw error;
-     }
-   };
-   ```
-
-2. **JSONB Querying**:
-   ```typescript
-   // Efficient JSONB path queries
-   const query = db
-     .select()
-     .from(contentPage)
-     .where(sql`${contentPage.en}->>'title' = ${title}`);
-   ```
-
-3. **Type Safety**:
-   ```typescript
-   // Runtime type checking
-   const validateContent = (data: unknown): LocalizedContent => {
-     return contentSchema.parse(data);
-   };
-   ```
-
-## Testing Patterns
-
-1. **Schema Testing**:
-```typescript
-// tests/schema.test.ts
-describe('Content Schema', () => {
-  it('should validate correct content structure', () => {
-    const content: LocalizedContent = {
-      meta: {
-        title: 'Test',
-        description: 'Test description'
-      },
-      form: {/* ... */},
-      content: {/* ... */}
-    };
-    expect(validateContent(content)).toBeDefined();
-  });
-});
-```
-
-2. **Database Testing**:
-```typescript
-// tests/db.test.ts
-describe('Database Operations', () => {
-  it('should handle concurrent writes', async () => {
-    const results = await Promise.all([
-      createContent({ /* ... */ }),
-      createContent({ /* ... */ })
-    ]);
-    expect(results).toHaveLength(2);
-  });
-});
-``` 
