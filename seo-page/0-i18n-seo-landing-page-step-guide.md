@@ -35,6 +35,8 @@ public/
     └── ...
 ```
 
+> **Note:** The `components/` directory and component names shown above are illustrative; replace them with your project's actual UI components and directory structure.
+
 ## 1. Copy Shared Components & Middleware
 
 From `dev-playbook/common-component/`, copy into your project:
@@ -104,19 +106,19 @@ export default function RootLayout({ children }) {
 
 This emits `<link rel="alternate"/>` tags for each locale plus `x-default`.
 
-## 6. Add Language Switcher to Header
+## 6. Add Language Switcher to Footer
 
-Include the dropdown in your header or layout:
+Include the dropdown in your footer component:
 
 ```tsx
 'use client'
 import { LanguageSwitcher } from '@/components/language-switcher'
 
-export function Header() {
+export function Footer() {
   return (
-    <header className="flex justify-end p-4">
+    <footer className="flex justify-center p-4">
       <LanguageSwitcher />
-    </header>
+    </footer>
   )
 }
 ```
