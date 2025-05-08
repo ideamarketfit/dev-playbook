@@ -2,6 +2,10 @@
 
 This guide explains how to implement SEO-optimized collection and individual pages with internationalization (i18n) support in a Next.js 14+ project. While we use a tool page as an example, this pattern can be applied to any page type (templates, blog posts, landing pages, etc.).
 
+## Landing Page with i18n Overview
+
+This guide also includes patterns to implement a fully internationalized landing page, covering middleware, translation loading, language switching, page structure, and reusable templates for rapid development.
+
 ## Database Schema
 
 The SEO pages follow a consistent pattern where content is stored with language-specific columns. Here's an example using a `page` table:
@@ -61,6 +65,11 @@ The page structure follows Next.js App Router conventions:
 
 ```
 app/
+├── landing/               # Default landing page
+│   └── page.tsx
+├── [locale]/             # Localized routes
+│   └── landing/
+│       └── page.tsx      # Localized landing page
 ├── page/                  # Collection pages
 │   ├── page.tsx          # Main collection page
 │   └── [slug]/           # Individual pages
@@ -71,6 +80,37 @@ app/
 │       └── [slug]/
 │           └── page.tsx  # Localized individual page
 ```
+
+## Middleware Setup
+
+Copy the middleware implementation into your project root:
+
+```bash
+cp dev-playbook/common-component/middleware.ts middleware.ts
+```
+
+## Translation Loader
+
+Import translation utilities from the shared module:
+
+```ts
+import { getTranslations, defaultLocale, locales } from '@/common-component/i18n'
+```
+
+## Language Switcher
+
+Use the reusable component:
+
+```tsx
+import { LanguageSwitcher } from '@/common-component/language-switcher'
+```
+
+## Reusable Templates
+
+We provide a standalone template for direct reuse in `4-landing-page-template.md`. It includes:
+- Landing page component (`page.tsx`) with metadata generation.
+- Sample JSON translation entries.
+- Language switcher integration.
 
 ## Data Retrieval Methods
 
@@ -255,4 +295,8 @@ describe('SEO Pages', () => {
     expect(data).toEqual(englishContent);
   });
 });
-``` 
+```
+
+## Templates for Direct Reuse
+
+For a ready-to-use landing page setup, refer to `4-landing-page-template.md` in this folder. Copy and adapt it to your project. 

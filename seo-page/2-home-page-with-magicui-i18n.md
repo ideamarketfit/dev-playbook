@@ -14,6 +14,8 @@ A comprehensive guide for implementing a modern home page using Magic UI compone
 6. [Best Practices](#best-practices)
 7. [Common Gotchas](#common-gotchas)
 8. [Testing](#testing)
+9. [Language Switcher](#language-switcher)
+10. [Landing Page Implementation](#landing-page-implementation)
 
 ## Project Structure
 
@@ -263,3 +265,15 @@ describe('Header Component', () => {
 - Validate accessibility
 
 This structure ensures a maintainable, performant, and accessible implementation while following Next.js and React best practices. 
+
+## Language Switcher
+
+Use the pre-built `LanguageSwitcher` component from the common-component folder:
+
+```tsx
+import { LanguageSwitcher } from '@/common-component/language-switcher'
+```
+
+## Landing Page Implementation
+
+Refer to the landing page template at `dev-playbook/seo-page/4-landing-page-template.md` for a full example. 
