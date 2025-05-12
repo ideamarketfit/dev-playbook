@@ -195,6 +195,99 @@ export const service_page_workflow: WorkflowStep[] = [
 ];
 ```
 
+### Sample Page Generation Workflow
+Below is a complete example that shows how to generate the `slug`, `page_content`, `form_config`, populate the `en` column, and translate into additional locales. You can copy this into your `utils/seo-workflow/configurations` folder as a starting point.
+
+```ts
+import { toSlug, llm, concatenateFields, type WorkflowStep, type ParallelledExecutionStep } from '@/components/workflow-utils';
+import { createServicePageContentPrompt, createServiceFormPrompt } from '../prompts';
+
+// Helper to create a translation step for a given locale
+const translateTo = (lang: string): WorkflowStep => ({
+  type: 'llm' as const,
+  name: `Translate to ${lang}`,
+  input: {
+    system_msg: `Translate the JSON content in <en> into ${lang} (output valid JSON).`, 
+    user_msg: [{ type: 'db_field' as const, field: 'en' }],
+    model: process.env.NEXT_PUBLIC_TRANSLATION_MODEL!,
+    json: true,
+  },
+  output: lang,
+  function: llm,
+});
+
+export const sample_page_workflow: WorkflowStep[] = [
+  // 1. Normalize the SEO slug
+  {
+    type: 'slug',
+    input: { keyword: { type: 'db_field', field: 'keyword' } },
+    output: 'slug',
+    function: toSlug,
+  },
+
+  // 2. Generate main page content via LLM into `page_content`
+  {
+    type: 'llm',
+    name: 'Generate Page Content',
+    input: {
+      system_msg: createServicePageContentPrompt(),
+      user_msg: [
+        { type: 'db_field', field: 'keyword' },
+        { type: 'db_field', field: 'context' },
+      ],
+      model: process.env.NEXT_PUBLIC_SEO_MODEL!,
+      json: true,
+    },
+    output: 'page_content',
+    function: llm,
+  },
+
+  // 3. Generate optional form configuration via LLM into `form_config`
+  {
+    type: 'llm',
+    name: 'Generate Form Config',
+    input: {
+      system_msg: createServiceFormPrompt(),
+      user_msg: [
+        { type: 'db_field', field: 'keyword' },
+        { type: 'db_field', field: 'context' },
+        { type: 'db_field', field: 'page_content' },
+      ],
+      model: process.env.NEXT_PUBLIC_SEO_MODEL!,
+      json: true,
+    },
+    output: 'form_config',
+    function: llm,
+  },
+
+  // 4. Merge `form_config` and `page_content` into the `en` JSON column
+  {
+    type: 'concatenate_fields',
+    input: {
+      fields: [
+        { type: 'db_field', field: 'form_config' },
+        { type: 'db_field', field: 'page_content' },
+      ],
+    },
+    output: 'en',
+    function: concatenateFields,
+  },
+
+  // 5. Translate `en` into other locales in parallel
+  {
+    type: 'parallel',
+    name: 'Generate Translations',
+    steps: [
+      translateTo('ja'),
+      translateTo('es'),
+      translateTo('fr'),
+      translateTo('de'),
+      // add additional locales as needed
+    ],
+  },
+];
+```
+
 ## 5. Copy & Configure the Workflow Runner
 
 1. Copy the runner script into your scripts folder:
