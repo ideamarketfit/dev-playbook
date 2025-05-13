@@ -64,7 +64,18 @@ npm install lucide-react
 
 ## 3. Add Translation JSON Files
 
-Under `public/locales/`, create one file per supported locale (e.g. `en.json`, `ja.json`):
+- Under `public/locales/`, create one file per supported locale. Supported locales include:
+  - en (English)
+  - zh-Hant (繁體中文)
+  - ja (日本語)
+  - ko (한국어)
+  - es (Español)
+  - fr (Français)
+  - pt (Português)
+  - de (Deutsch)
+  - it (Italiano)
+  - he (עברית)
+  - ar (العربية)
 
 ```json
 {
@@ -74,7 +85,6 @@ Under `public/locales/`, create one file per supported locale (e.g. `en.json`, `
   }
 }
 ```
-
 Ensure the same structure across all locale files.
 
 ## 4. Configure Next.js Middleware
@@ -104,7 +114,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-This emits `<link rel="alternate"/>` tags for each locale plus `x-default`.
+This emits `<link rel="alternate"/>` tags for each locale plus `x-default`. Make sure to set `NEXT_PUBLIC_DOMAIN` in your environment (e.g. `example.com`) so that absolute URLs are generated correctly.
 
 ## 6. Add Language Switcher to Footer
 
@@ -166,6 +176,21 @@ export default async function LocalizedLandingPage({ params: { locale } }) {
 - Verify `<link rel="alternate"/>` tags in page source.
 - Use LanguageSwitcher to navigate locales.
 - Optionally write tests for `getTranslations('ja')` to confirm key availability.
+
+## Appendix: Supported Locales
+
+The shared `common-component/i18n.ts` defines the following locales:
+- en (English)
+- zh-Hant (繁體中文)
+- ja (日本語)
+- ko (한국어)
+- es (Español)
+- fr (Français)
+- pt (Português)
+- de (Deutsch)
+- it (Italiano)
+- he (עברית)
+- ar (العربية)
 
 ---
 
